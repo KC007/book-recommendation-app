@@ -4,7 +4,7 @@ The program will first ask the user to pick a genre and pick a random book of th
 Then it will find the book in Amazon and add it to the cart. The browser will be opened and the cart page will be shown to the user. 
 
 **Author : Karen Cheung** 
-**Tech used : Javascript , Node js, Puppeteer** 
+**Tech used : Javascript , Node js(v17.6.0), Puppeteer,** 
 
 ###### How to install and run the project
 
