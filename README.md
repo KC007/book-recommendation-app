@@ -18,8 +18,7 @@ This should prompt the program to load up a list of genres to pick from in the t
 
 ###### Challenges
 
-I took a bit of the time to debug due to some inconsistency with the styling & labelling of the elements 
-in the source website (Goodreads) which could be due to different window size.
+I took a bit of the time to debug due to some inconsistency with the styling & labelling of the elements in the source website (Goodreads) which could be due to the responsiveness to window sizes.
 
-I was also trying to use certain buttons as shortcuts to get to the product page in Amazon. However, the problem of opening a new tab and continuing to operate on that new tab
-seems to take too long to debug. Therefore, I have picked another method to achieve the same goal although the code might seem less elegant. 
+I also spent a bit more time to manipulate certain buttons as shortcuts to get to the product page in Amazon. However, when a button from Goodreads.com triggers a new tab, it is more problematic to continue to operate on that new tab. It seems to take too long to debug and time conscious wise, I have picked another method to achieve the same goal although the code might seem less elegant. 
+

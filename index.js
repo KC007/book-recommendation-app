@@ -58,7 +58,7 @@ async function dataScraping (){
 
 async function redirect(url){
 
-    console.log(chalk.magentaBright('Wait a moment.... We are taking you to Amazon ' + '/n'))
+    console.log(chalk.magentaBright('Wait a moment.... We are taking you to Amazon ' + '\n'))
 
     (async () =>{
         try{
@@ -113,7 +113,6 @@ async function launchingAmazon(booktitle){
             else{
                 throw new Error("Element not found");
             }
-
 
             await page.waitForSelector('input#add-to-cart-button')
                 .then(() => {
