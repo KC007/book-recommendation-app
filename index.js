@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+
 import  pupeeteer from 'puppeteer';
 import inquirer from 'inquirer';
 import _ from 'underscore';
@@ -30,6 +30,8 @@ async function main(){
 
 }
 
+// A list of genre is extracted from goodreads.com //
+
 async function dataScraping (){
 
     let data = new Promise((resolve, rejects) =>{ resolve(
@@ -52,35 +54,34 @@ async function dataScraping (){
     return data;
 } 
 
+// taking user input to goodreads and randomly pick a book of the selected genre //
+
 async function redirect(url){
+
+    console.log(chalk.magentaBright('Wait a moment.... We are taking you to Amazon ' + '/n'))
 
     (async () =>{
         try{
-        const browser = await pupeeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url);
-        
-
-        await page.waitForSelector('.pollAnswer__bookLink')
-        const bookArray = await page.$$('.pollAnswer__bookLink')
-        const propertyJsHandles = await Promise.all(bookArray.map(bookArray => bookArray.getProperty('href')));
-
-        const linksArray = await Promise.all(propertyJsHandles.map(handle => handle.jsonValue()));
-
-        // if(linksArray){console.log(bookArray.length)}else{console.log('nothing found')}
-        const numOfBooks = bookArray.length-1;
-        let randomBookNum = Math.floor(Math.random()*(numOfBooks-0) + 0);
-    
-        await page.goto(linksArray[randomBookNum]);
-        await page.waitForSelector('h1#bookTitle')
-        // const bookSpecificUrl = await page.evaluate(() => document.querySelectorAll('a.winningTitle.choice.gcaBookTitle')[0].href);
-        // await page.goto(bookSpecificUrl);
-        
-        const bookTitle = await page.evaluate(() => document.querySelector('h1#bookTitle').innerText);
-       
-        launchingAmazon(bookTitle);
-        
+            const browser = await pupeeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(url);
             
+
+            await page.waitForSelector('.pollAnswer__bookLink')
+            const bookArray = await page.$$('.pollAnswer__bookLink')
+            const propertyJsHandles = await Promise.all(bookArray.map(bookArray => bookArray.getProperty('href')));
+
+            const linksArray = await Promise.all(propertyJsHandles.map(handle => handle.jsonValue()));
+
+            const numOfBooks = bookArray.length-1;
+            let randomBookNum = Math.floor(Math.random()*(numOfBooks-0) + 0);
+        
+            await page.goto(linksArray[randomBookNum]);
+            await page.waitForSelector('h1#bookTitle')
+            
+            const bookTitle = await page.evaluate(() => document.querySelector('h1#bookTitle').innerText);
+        
+            launchingAmazon(bookTitle);
         }
         catch(err){
             console.error(err);
@@ -89,45 +90,52 @@ async function redirect(url){
     })()
 }
 
+// find book in Amazon and display cart page //
+
 async function launchingAmazon(booktitle){
 
     (async () =>{
         try{
-        const browser = await pupeeteer.launch({headless:false, 
-        defaultViewport: null})
-        const page = await browser.newPage();
-        await page.goto('https://amazon.com');
-        await page.waitForSelector('input[name=field-keywords]');
-        await page.type('input[name=field-keywords]',booktitle);
-        await page.click('input[type="submit"]');
+            const browser = await pupeeteer.launch({headless:false, 
+            defaultViewport: null})
+            const page = await browser.newPage();
+            await page.goto('https://amazon.com');
+            await page.waitForSelector('input[name=field-keywords]');
+            await page.type('input[name=field-keywords]',booktitle);
+            await page.click('input[type="submit"]');
 
-        await page.waitForSelector('h2.a-size-mini');
-        const [a] = await page.$x("//a[contains(text(), 'Paperback')]")
-        if(a){
-            await a.click();
-        }
-        else{
-            throw new Error("Element not found");
-        }
+            await page.waitForSelector('h2.a-size-mini');
+            const [a] = await page.$x("//a[contains(text(), 'Paperback')]");
+
+            if(a){
+                await a.click();
+            }
+            else{
+                throw new Error("Element not found");
+            }
 
 
-        await page.waitForSelector('input#add-to-cart-button').then(() => {
-            console.log('add to cart ')
-            page.click('input#add-to-cart-button');
-        }).catch( e=> {
-            page.click('input#add-to-cart-button-ubb');
-        });
-       
-        await page.waitForSelector('a#nav-cart');
-        await page.click('a#nav-cart');
-            
+            await page.waitForSelector('input#add-to-cart-button')
+                .then(() => {
+                    page.click('input#add-to-cart-button');
+                }).catch( e=> {
+                    page.click('input#add-to-cart-button-ubb');
+                });
+
+            const [link] = await page.$x("//a[contains(text(), ' Go to Cart ')]");
+
+            if(link){
+                await page.click('a#nav-cart');
+            }
+
+            // force it to reload to show the cart page (temporary work around )
+            await page.click('a#nav-cart');
+                
         }
         catch(err){
             console.error(err);
         }
-
     })()
-
 }
 
 main();
