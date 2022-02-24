@@ -1,12 +1,11 @@
 {
   "name": "book-recommendation-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Book recommendation app ",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "author": "",
+  "author": "Karen",
   "license": "ISC",
   "dependencies": {
     "1-liners": "^0.4.2",
