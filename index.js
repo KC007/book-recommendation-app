@@ -68,7 +68,8 @@ async function dataScraping() {
 async function redirect(url) {
   console.log(
     chalk.magentaBright("Wait a moment.... We are taking you to Amazon " + "\n")
-  )(async () => {
+  );
+  (async () => {
     try {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
@@ -131,17 +132,33 @@ async function launchingAmazon(booktitle) {
           page.click("input#add-to-cart-button");
         })
         .catch((e) => {
+          console.log('no add to cart button')
           page.click("input#add-to-cart-button-ubb");
+          page.click("a#nav-cart");
         });
 
-      const [link] = await page.$x("//a[contains(text(), ' Go to Cart ')]");
+        setTimeout(function(){page.click("a#nav-cart")}, 3000)
 
-      if (link) {
-        await page.click("a#nav-cart");
-      }
+        // function goToCart(){
+        //     page.click("a#nav-cart")
+        // }
+
+        
+    //   const [link] = await page.$x("//a[contains(text(), ' Go to Cart ')]");
+
+    //   if (link) {
+    //     console.log('theres link');
+    //     await page.click("a#nav-cart");
+    //   }
+    //   else{
+    //     console.log('no link');
+    //     await page.click("div#nav-cart-count-container");
+    //   }
+      
 
       /** force it to reload to show the cart page (temporary work around ) */
-      await page.click("a#nav-cart");
+    //   await page.click("a#nav-cart");
+        console.log('The search is over.')
     } catch (err) {
       console.error(err);
     }
