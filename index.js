@@ -14,7 +14,7 @@ async function main() {
   let titleList = data.map((x) => {
     return x.title;
   });
-  a;
+
   inquirer
     .prompt([
       {
